@@ -22,3 +22,7 @@ dependencyResolutionManagement {
 rootProject.name = "Bytes example"
 include(":app")
 include(":core")
+include(":api")
+include(":api:authentication")
+include(":domain")
+include(":domain:authentication")

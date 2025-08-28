@@ -37,6 +37,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":domain:authentication"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -47,4 +49,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.google.fonts)
     debugImplementation(libs.androidx.ui.tooling)
+
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 }
