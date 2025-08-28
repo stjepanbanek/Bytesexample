@@ -1,10 +1,10 @@
-package banek.stef.bytesexample.ui.theme
+package banek.stef.core.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import banek.stef.bytesexample.R
+import banek.stef.core.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",

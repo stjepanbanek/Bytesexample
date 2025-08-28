@@ -1,4 +1,4 @@
-package banek.stef.bytesexample.ui.theme
+package banek.stef.core.theme
 
 import androidx.compose.ui.graphics.Color
 

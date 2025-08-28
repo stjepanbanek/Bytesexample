@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Bytes example"
 include(":app")
- 
+include(":core")
