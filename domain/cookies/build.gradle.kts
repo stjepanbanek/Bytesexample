@@ -1,20 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
-    namespace = "banek.stef.bytesexample"
+    namespace = "banek.stef.domain.cookies"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "banek.stef.bytesexample"
         minSdk = 33
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,12 +37,15 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":domain:authentication"))
-    implementation(project(":domain:cookies"))
+    implementation(project(":api:authentication"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -52,13 +54,13 @@ dependencies {
     implementation(libs.google.fonts)
     debugImplementation(libs.androidx.ui.tooling)
 
-    implementation(project.dependencies.platform(libs.koin.bom))
-    implementation(libs.koin.core)
-    implementation(libs.koin.android)
-    implementation(libs.koin.compose)
-
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.kotlinx.serialization.core)
+
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 }
