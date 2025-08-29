@@ -1,4 +1,4 @@
-package banek.stef.domain.cookies.ui
+package banek.stef.domain.cookies.ui.login
 
 import androidx.compose.ui.text.input.TextFieldValue
 

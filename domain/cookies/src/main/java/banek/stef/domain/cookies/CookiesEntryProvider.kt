@@ -3,7 +3,7 @@ package banek.stef.domain.cookies
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
-import banek.stef.domain.cookies.ui.LoginScreen
+import banek.stef.domain.cookies.ui.login.LoginScreen
 import kotlinx.serialization.Serializable
 
 sealed interface CookiesRoute : NavKey {

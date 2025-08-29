@@ -1,4 +1,4 @@
-package banek.stef.domain.cookies.ui
+package banek.stef.domain.cookies.ui.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import banek.stef.domain.cookies.ui.login.LoginState
+import banek.stef.domain.cookies.ui.login.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

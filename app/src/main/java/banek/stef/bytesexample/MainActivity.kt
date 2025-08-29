@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import banek.stef.core.theme.BytesExampleTheme
-import banek.stef.domain.cookies.ui.LoginScreen
+import banek.stef.domain.cookies.ui.login.LoginScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

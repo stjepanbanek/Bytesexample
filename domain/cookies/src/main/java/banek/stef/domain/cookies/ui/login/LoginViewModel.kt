@@ -1,4 +1,4 @@
-package banek.stef.domain.cookies.ui
+package banek.stef.domain.cookies.ui.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +39,7 @@ internal class LoginViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(500),
+        started = SharingStarted.Companion.WhileSubscribed(500),
         initialValue = LoginState()
     )
 
