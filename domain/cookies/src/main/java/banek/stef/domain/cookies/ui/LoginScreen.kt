@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 
-// TODO: Add navigation logic and make this internal
 @Composable
 fun LoginScreen() {
     val viewModel = koinViewModel<LoginViewModel>()
@@ -43,12 +42,20 @@ private fun LoginScreen(
             .fillMaxSize()
             .padding(24.dp)
     ) {
+        Text(
+            text = "Login to see 🍪",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(vertical = 32.dp)
+        )
+
         TextField(
             value = usernameInput,
             onValueChange = { onInteraction(LoginInteraction.UsernameChanged(it)) },
             label = { Text(text = "Username") },
             placeholder = { Text(text = "Enter your username") },
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
         )
 
         TextField(
@@ -56,7 +63,9 @@ private fun LoginScreen(
             onValueChange = { onInteraction(LoginInteraction.PasswordChanged(it)) },
             label = { Text(text = "Password") },
             placeholder = { Text(text = "Enter your password") },
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
         )
 
         Spacer(modifier = Modifier.weight(1f))
