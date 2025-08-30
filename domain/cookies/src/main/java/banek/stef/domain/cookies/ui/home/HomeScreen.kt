@@ -1,22 +1,51 @@
 package banek.stef.domain.cookies.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.toRect
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.withSaveLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import banek.stef.domain.cookies.service.model.Cookie
+import coil3.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -45,6 +74,7 @@ private fun HomeScreen(
             HomeState.Error -> HomeError(
                 onRetryClicked = { onInteraction(HomeInteraction.RetryClicked) }
             )
+
             is HomeState.Content -> HomeContent(
                 viewState = viewState,
                 onInteraction = onInteraction
@@ -79,8 +109,14 @@ private fun HomeError(
         modifier = Modifier.fillMaxSize()
     ) {
         Card {
-            Column {
-                Text(text = "An error occurred. Please try again.")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "An error occurred. Please try again.",
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
                 Button(
                     onClick = onRetryClicked
                 ) {
@@ -91,9 +127,110 @@ private fun HomeError(
     }
 }
 
-private fun HomeContent(
+@Composable
+private fun ColumnScope.HomeContent(
     viewState: HomeState.Content,
     onInteraction: (HomeInteraction) -> Unit
 ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .drawWithContent {
+                drawIntoCanvas { canvas ->
+                    canvas.withSaveLayer(
+                        bounds = size.toRect(),
+                        paint = Paint(),
+                    ) {
+                        drawContent()
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.2f)),
+                                startY = size.height - 3.dp.toPx(),
+                                endY = size.height,
+                            ),
+                        )
+                    }
+                }
+            }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            style = MaterialTheme.typography.headlineSmall,
+            text = "Welcome, ${viewState.userName}",
+            modifier = Modifier.weight(1f)
+        )
 
+        IconButton(
+            onClick = { onInteraction(HomeInteraction.LogoutClicked) }
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.Logout,
+                contentDescription = "Logout"
+            )
+        }
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(viewState.cookies) { cookie ->
+            CookieItem(
+                cookie = cookie,
+                onFavoriteToggle = {
+                    onInteraction(
+                        HomeInteraction.FavoriteClicked(
+                            cookie
+                        )
+                    )
+                },
+                onCookieClicked = { onInteraction(HomeInteraction.CookieClicked(cookie.id)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CookieItem(
+    cookie: Cookie,
+    onFavoriteToggle: () -> Unit,
+    onCookieClicked: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onCookieClicked() } )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            AsyncImage(
+                model = cookie.imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+            )
+
+            Text(
+                text = cookie.name,
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .padding(top = 16.dp, bottom = 8.dp)
+                    .padding(horizontal = 16.dp)
+            )
+
+            Text(
+                text = cookie.description,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .padding(horizontal = 16.dp)
+            )
+        }
+    }
 }

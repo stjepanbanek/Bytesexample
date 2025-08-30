@@ -66,4 +66,6 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.coil.okhttp)
+
+    implementation(libs.material.icons.compose)
 }

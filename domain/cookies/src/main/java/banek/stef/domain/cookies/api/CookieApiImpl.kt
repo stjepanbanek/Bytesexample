@@ -8,8 +8,7 @@ internal class CookieApiImpl : CookieApi {
 
     override suspend fun fetchCookies(): Result<List<CookieDto>> {
         delay(1000)
-        return Result.failure(IllegalStateException("Network error"))
-        //return Result.success(COOKIES)
+        return Result.success(COOKIES)
     }
 
     override suspend fun favoriteCookie(request: FavoriteCookieRequest): Result<Unit> {
@@ -35,7 +34,7 @@ internal class CookieApiImpl : CookieApi {
                 id = "3",
                 name = "Fortune cookie",
                 description = "A cookie that pronounces your doom. Or not.",
-                imageUrl = "https://upload.wikimedia.org/wikipedia/commons/d/d2/Fortune_cookies.jpg"
+                imageUrl = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3P07iEnoBfZ3SWMG2xOXd4Ui4E_gU-pL4Ir7stBTisNDQ1pkLXAILxi3aQx6KPwDu3J4nQ6VyR99B3wcaXwcNIUlM4l0OyU_nM8ljkLC8Ko6JQX0JB2K-cja9v31oESvCEp_Ic0x0rdg/w1200-h630-p-k-no-nu/Custom+Fortune+Cookie4.jpg"
             ),
             CookieDto(
                 id = "4",
