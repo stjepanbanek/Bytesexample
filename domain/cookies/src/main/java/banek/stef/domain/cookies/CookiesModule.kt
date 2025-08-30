@@ -4,6 +4,7 @@ import banek.stef.domain.cookies.api.CookieApi
 import banek.stef.domain.cookies.api.CookieApiImpl
 import banek.stef.domain.cookies.service.CookieServiceImpl
 import banek.stef.domain.cookies.service.CookiesService
+import banek.stef.domain.cookies.ui.home.HomeViewModel
 import banek.stef.domain.cookies.ui.login.LoginViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -17,4 +18,5 @@ val cookiesModule = module {
     singleOf(::CookieServiceImpl) bind CookiesService::class
 
     viewModelOf(::LoginViewModel)
+    viewModelOf(::HomeViewModel)
 }

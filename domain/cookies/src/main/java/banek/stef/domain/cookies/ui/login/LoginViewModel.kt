@@ -1,5 +1,6 @@
 package banek.stef.domain.cookies.ui.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,15 +10,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import banek.stef.api.authentication.AuthenticationApi
 import banek.stef.api.authentication.AuthenticationParams
+import banek.stef.core.navigation.Navigator
+import banek.stef.core.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class LoginViewModel(
     private val authenticationApi: AuthenticationApi,
+    private val navigator: Navigator,
 ) : ViewModel() {
 
     var usernameInputState by mutableStateOf(TextFieldValue(""))
@@ -29,8 +33,8 @@ internal class LoginViewModel(
     private var errorPresentFlow = MutableStateFlow(false)
 
     val viewState = combine(
-        snapshotFlow { usernameInputState }.map { it.text.isNotEmpty() },
-        snapshotFlow { passwordInputState }.map { it.text.isNotEmpty() },
+        snapshotFlow { usernameInputState.text.isNotEmpty() }.distinctUntilChanged(),
+        snapshotFlow { passwordInputState.text.isNotEmpty() }.distinctUntilChanged(),
         errorPresentFlow,
     ) { isUsernameFilled, isPasswordFilled, isErrorPresent ->
         LoginState(
@@ -66,7 +70,7 @@ internal class LoginViewModel(
                 )
             )
                 .onSuccess {
-                    // Navigate to next screen
+                    navigator.navigateTo(Route.Home)
                 }
                 .onFailure {
                     errorPresentFlow.value = true

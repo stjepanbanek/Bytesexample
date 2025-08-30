@@ -7,7 +7,9 @@ import kotlinx.coroutines.delay
 internal class CookieApiImpl : CookieApi {
 
     override suspend fun fetchCookies(): Result<List<CookieDto>> {
-        return Result.success(COOKIES)
+        delay(1000)
+        return Result.failure(IllegalStateException("Network error"))
+        //return Result.success(COOKIES)
     }
 
     override suspend fun favoriteCookie(request: FavoriteCookieRequest): Result<Unit> {

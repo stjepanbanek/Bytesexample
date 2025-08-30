@@ -1,5 +1,6 @@
 package banek.stef.domain.cookies.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import banek.stef.api.authentication.AuthenticationApi
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
     private val cookieService: CookiesService,
-    private val authenticationApi: AuthenticationApi,
+    authenticationApi: AuthenticationApi,
 ) : ViewModel() {
 
     private val didErrorHappenFlow = MutableStateFlow(false)
@@ -30,6 +31,7 @@ internal class HomeViewModel(
         authenticationApi.currentUser.filterNotNull().map { it.name },
         didErrorHappenFlow
     ) { cookies, userName, didErrorHappen ->
+        Log.d("StefDebug", "State changed: $cookies, $userName, $didErrorHappen")
         when {
             didErrorHappen -> HomeState.Error
             cookies.isEmpty() -> HomeState.Loading
@@ -47,6 +49,9 @@ internal class HomeViewModel(
     private fun refreshCookies() {
         viewModelScope.launch {
             cookieService.refreshCookies()
+                .onFailure {
+                    didErrorHappenFlow.value = true
+                }
         }
     }
 

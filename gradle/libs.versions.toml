@@ -11,8 +11,8 @@ jetbrainsKotlinJvm = "2.2.10"
 coroutines = "1.10.2"
 koin = "4.1.0"
 
-nav3Core = "1.0.0-alpha08"
-lifecycleViewmodelNav3 = "1.0.0-alpha04"
+nav3Core = "1.0.0-alpha04"
+lifecycleViewmodelNav3 = "1.0.0-alpha02"
 kotlinSerialization = "2.2.10"
 kotlinxSerializationCore = "1.9.0"
 
