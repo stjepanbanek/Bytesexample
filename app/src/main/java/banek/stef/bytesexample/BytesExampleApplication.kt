@@ -1,6 +1,7 @@
 package banek.stef.bytesexample
 
 import android.app.Application
+import banek.stef.core.di.navigatorModule
 import banek.stef.domain.authentication.authenticationModule
 import banek.stef.domain.cookies.cookiesModule
 import org.koin.android.ext.koin.androidContext
@@ -21,6 +22,7 @@ class BytesExampleApplication : Application() {
 
             modules(
                 authenticationModule,
+                navigatorModule,
                 cookiesModule
             )
         }
