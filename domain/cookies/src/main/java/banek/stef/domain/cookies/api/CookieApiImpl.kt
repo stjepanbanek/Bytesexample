@@ -1,10 +1,18 @@
 package banek.stef.domain.cookies.api
 
 import banek.stef.domain.cookies.api.model.CookieDto
+import banek.stef.domain.cookies.api.model.FavoriteCookieRequest
+import kotlinx.coroutines.delay
 
 internal class CookieApiImpl : CookieApi {
+
     override suspend fun fetchCookies(): Result<List<CookieDto>> {
         return Result.success(COOKIES)
+    }
+
+    override suspend fun favoriteCookie(request: FavoriteCookieRequest): Result<Unit> {
+        delay(1000)
+        return Result.success(Unit)
     }
 
     companion object {

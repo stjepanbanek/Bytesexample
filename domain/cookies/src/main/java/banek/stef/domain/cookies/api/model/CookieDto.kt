@@ -7,5 +7,5 @@ internal data class CookieDto(
     val id: String,
     val name: String,
     val description: String,
-    val imageUrl: String
+    val imageUrl: String,
 )
