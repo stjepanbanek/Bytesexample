@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
@@ -21,24 +22,20 @@ internal class HomeViewModel(
     authenticationProvider: AuthenticationProvider,
 ) : ViewModel() {
 
-    private val didErrorHappenFlow = MutableStateFlow(false)
-
-    init {
-        refreshCookies()
-    }
+    private val isLoading = MutableStateFlow(true)
 
     val viewState = combine(
-        cookieService.cookiesFlow().onStart { emit(emptyList()) },
+        cookieService.cookiesFlow(),
         authenticationProvider.currentUser.filterNotNull().map { it.name },
-        didErrorHappenFlow
-    ) { cookies, userName, didErrorHappen ->
+        isLoading,
+    ) { cookiesResult, userName, isLoading ->
         when {
-            didErrorHappen -> HomeState.Error
-            cookies.isEmpty() -> HomeState.Loading
-            else -> HomeState.Content(
+            isLoading -> HomeState.Loading
+            cookiesResult.isSuccess -> HomeState.Content(
                 userName = userName,
-                cookies = cookies
+                cookies = cookiesResult.getOrThrow()
             )
+            else -> HomeState.Error
         }
     }.stateIn(
         scope = viewModelScope,
@@ -48,10 +45,9 @@ internal class HomeViewModel(
 
     private fun refreshCookies() {
         viewModelScope.launch {
+            isLoading.update { true }
             cookieService.refreshCookies()
-                .onFailure {
-                    didErrorHappenFlow.value = true
-                }
+            isLoading.update { false }
         }
     }
 
@@ -62,21 +58,11 @@ internal class HomeViewModel(
             }
 
             HomeInteraction.RetryClicked -> {
-                didErrorHappenFlow.value = false
                 refreshCookies()
             }
 
             is HomeInteraction.CookieClicked -> {
                 // Navigate to details
-            }
-
-            is HomeInteraction.FavoriteClicked -> {
-                cookieService.favoriteCookie(
-                    CookieStatusUpdateParams(
-                        cookieId = interaction.cookie.id,
-                        newStatus = interaction.cookie.status.toggle()
-                    )
-                )
             }
         }
     }

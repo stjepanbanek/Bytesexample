@@ -5,8 +5,6 @@ import banek.stef.domain.cookies.service.model.CookieStatusUpdateParams
 import kotlinx.coroutines.flow.Flow
 
 internal interface CookiesService {
-    suspend fun refreshCookies(): Result<Unit>
-    fun cookiesFlow(): Flow<List<Cookie>>
-
-    fun favoriteCookie(params: CookieStatusUpdateParams)
+    fun refreshCookies()
+    fun cookiesFlow(): Flow<Result<List<Cookie>>>
 }

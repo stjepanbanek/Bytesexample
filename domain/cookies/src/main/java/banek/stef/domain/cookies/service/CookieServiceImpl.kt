@@ -1,7 +1,6 @@
 package banek.stef.domain.cookies.service
 
 import banek.stef.domain.cookies.api.CookieApi
-import banek.stef.domain.cookies.api.model.FavoriteCookieRequest
 import banek.stef.domain.cookies.service.model.Cookie
 import banek.stef.domain.cookies.service.model.CookieStatus
 import banek.stef.domain.cookies.service.model.CookieStatusUpdateParams
@@ -9,8 +8,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -20,48 +21,20 @@ internal class CookieServiceImpl(
 
     private val serviceScope = CoroutineScope(Dispatchers.Default) + SupervisorJob()
 
-    private val cookiesStateFlow = MutableStateFlow<List<Cookie>?>(null)
+    private val cookiesResultSharedFlow = MutableSharedFlow<Result<List<Cookie>>>()
 
-    override suspend fun refreshCookies(): Result<Unit> {
-        return cookieApi.fetchCookies()
-            .onSuccess { response ->
-                cookiesStateFlow.value = response.map { it.toCookie() }
-            }
-            .map {}
-    }
-
-    override fun cookiesFlow(): Flow<List<Cookie>> = cookiesStateFlow.filterNotNull()
-
-    override fun favoriteCookie(params: CookieStatusUpdateParams) {
+    override fun refreshCookies() {
         serviceScope.launch {
-            // Get current status
-            val currentStatus = cookiesStateFlow.value?.find { it.id == params.cookieId }?.status
-                ?: return@launch
-            // Show loading
-            updateCookieStatus(params.cookieId, CookieStatus.LOADING)
-            // Try updating the status
-            cookieApi.favoriteCookie(params.toRequest())
-                .onSuccess {
-                    updateCookieStatus(params.cookieId, params.newStatus)
-                }
-                .onFailure {
-                    // Revert to previous status on failure
-                    updateCookieStatus(params.cookieId, currentStatus)
-                    // Handle error by showing message or something
-                    // ...
-                }
+            val result = cookieApi.fetchCookies().map { list -> list.map { it.toCookie() } }
+            cookiesResultSharedFlow.emit(result)
         }
     }
 
-    private fun updateCookieStatus(cookieId: String, status: CookieStatus) {
-        val currentCookies = cookiesStateFlow.value ?: return
-        val updatedCookies = currentCookies.map { cookie ->
-            if (cookie.id == cookieId) {
-                cookie.copy(status = status)
-            } else {
-                cookie
-            }
-        }
-        cookiesStateFlow.value = updatedCookies
-    }
+    override fun cookiesFlow(): Flow<Result<List<Cookie>>> = cookiesResultSharedFlow
+        .onSubscription { refreshCookies() }
+        .shareIn(
+            scope = serviceScope,
+            started = SharingStarted.Lazily,
+            replay = 1,
+        )
 }

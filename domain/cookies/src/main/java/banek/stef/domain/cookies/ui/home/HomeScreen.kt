@@ -155,13 +155,7 @@ private fun ColumnScope.HomeContent(
         items(viewState.cookies) { cookie ->
             CookieItem(
                 cookie = cookie,
-                onFavoriteToggle = {
-                    onInteraction(
-                        HomeInteraction.FavoriteClicked(
-                            cookie
-                        )
-                    )
-                },
+                onFavoriteToggle = {},
                 onCookieClicked = { onInteraction(HomeInteraction.CookieClicked(cookie.id)) }
             )
         }
