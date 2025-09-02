@@ -1,6 +1,6 @@
 package banek.stef.domain.authentication
 
-import banek.stef.api.authentication.AuthenticationApi
+import banek.stef.api.authentication.AuthenticationProvider
 import banek.stef.api.authentication.AuthenticationParams
 import banek.stef.api.authentication.User
 import banek.stef.domain.authentication.backend.AuthenticationBackend
@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-internal class AuthenticationApiImpl(
+internal class AuthenticationProviderImpl(
     private val backend: AuthenticationBackend
-) : AuthenticationApi {
+) : AuthenticationProvider {
 
     private val userFlow = MutableStateFlow<User?>(null)
 

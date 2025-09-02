@@ -2,7 +2,7 @@ package banek.stef.domain.cookies.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import banek.stef.api.authentication.AuthenticationApi
+import banek.stef.api.authentication.AuthenticationProvider
 import banek.stef.core.navigation.Navigator
 import banek.stef.domain.cookies.service.CookiesService
 import banek.stef.domain.cookies.service.model.CookieStatusUpdateParams
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 internal class HomeViewModel(
     private val cookieService: CookiesService,
     private val navigator: Navigator,
-    authenticationApi: AuthenticationApi,
+    authenticationProvider: AuthenticationProvider,
 ) : ViewModel() {
 
     private val didErrorHappenFlow = MutableStateFlow(false)
@@ -29,7 +29,7 @@ internal class HomeViewModel(
 
     val viewState = combine(
         cookieService.cookiesFlow().onStart { emit(emptyList()) },
-        authenticationApi.currentUser.filterNotNull().map { it.name },
+        authenticationProvider.currentUser.filterNotNull().map { it.name },
         didErrorHappenFlow
     ) { cookies, userName, didErrorHappen ->
         when {

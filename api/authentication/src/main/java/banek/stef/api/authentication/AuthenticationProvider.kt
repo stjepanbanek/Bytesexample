@@ -2,7 +2,7 @@ package banek.stef.api.authentication
 
 import kotlinx.coroutines.flow.Flow
 
-interface AuthenticationApi {
+interface AuthenticationProvider {
 
     val currentUser: Flow<User?>
 

@@ -1,6 +1,5 @@
 package banek.stef.domain.cookies.ui.login
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +7,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import banek.stef.api.authentication.AuthenticationApi
+import banek.stef.api.authentication.AuthenticationProvider
 import banek.stef.api.authentication.AuthenticationParams
 import banek.stef.core.navigation.Navigator
 import banek.stef.core.navigation.Route
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class LoginViewModel(
-    private val authenticationApi: AuthenticationApi,
+    private val authenticationProvider: AuthenticationProvider,
     private val navigator: Navigator,
 ) : ViewModel() {
 
@@ -63,7 +62,7 @@ internal class LoginViewModel(
 
     private fun login() {
         viewModelScope.launch {
-            authenticationApi.login(
+            authenticationProvider.login(
                 AuthenticationParams(
                     username = usernameInputState.text,
                     password = passwordInputState.text,
