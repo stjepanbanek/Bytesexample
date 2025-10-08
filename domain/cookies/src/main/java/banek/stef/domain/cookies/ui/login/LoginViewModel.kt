@@ -29,7 +29,7 @@ internal class LoginViewModel(
     var passwordInputState by mutableStateOf(TextFieldValue(""))
         private set
 
-    private var errorPresentFlow = MutableStateFlow(false)
+    private val errorPresentFlow = MutableStateFlow(false)
 
     val viewState = combine(
         snapshotFlow { usernameInputState.text.isNotEmpty() }.distinctUntilChanged(),
