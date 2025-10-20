@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.shareIn
@@ -21,20 +22,24 @@ internal class CookieServiceImpl(
 
     private val serviceScope = CoroutineScope(Dispatchers.Default) + SupervisorJob()
 
-    private val cookiesResultSharedFlow = MutableSharedFlow<Result<List<Cookie>>>()
+    private val _cookiesResultSharedFlow = MutableSharedFlow<Result<List<Cookie>>>()
+    private val cookiesResultSharedFlow: SharedFlow<Result<List<Cookie>>> = _cookiesResultSharedFlow
+        .onSubscription { refreshCookies() }
+        .shareIn(
+            scope = serviceScope,
+            started = SharingStarted.WhileSubscribed(
+                stopTimeoutMillis = 10000L,
+                replayExpirationMillis = 0,
+            ),
+            replay = 1,
+        )
 
     override fun refreshCookies() {
         serviceScope.launch {
             val result = cookieApi.fetchCookies().map { list -> list.map { it.toCookie() } }
-            cookiesResultSharedFlow.emit(result)
+            _cookiesResultSharedFlow.emit(result)
         }
     }
 
     override fun cookiesFlow(): Flow<Result<List<Cookie>>> = cookiesResultSharedFlow
-        .onSubscription { refreshCookies() }
-        .shareIn(
-            scope = serviceScope,
-            started = SharingStarted.Lazily,
-            replay = 1,
-        )
 }
